@@ -1,9 +1,9 @@
-import { AppRoutes } from './Routes'
+import { AppRoutes } from './routes/auth.routes'
 
-function App() {
-	return (
+function App () {
+  return (
 		<AppRoutes />
-	)
+  )
 }
 
 export default App
