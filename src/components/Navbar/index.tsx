@@ -1,7 +1,11 @@
 import icon from '../../assets/icon.png'
 import { styles } from './styles'
 
-export default function Navbar () {
+interface NavbarProps {
+	auth?: boolean
+}
+
+export function Navbar ({ auth = false }: NavbarProps): JSX.Element {
   return (
 		<nav className="navbar navbar-expand-sm navbar-light bg-light">
 			<div className="container-fluid">
@@ -13,12 +17,29 @@ export default function Navbar () {
 				</button>
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav">
-						<li className="nav-item">
-							<a className="nav-link" aria-current="page" href="/">Fazer Login</a>
-						</li>
-						<li className="nav-item">
-							<a className="nav-link" href="/dashboard">Cadastrar-se</a>
-						</li>
+						{auth
+						  ? (
+								<>
+									<li className="nav-item">
+										<a className="nav-link" aria-current="page" href="/">Fazer Login</a>
+									</li>
+									<li className="nav-item">
+										<a className="nav-link" href="/signup">Cadastrar-se</a>
+									</li>
+								</>
+						    )
+						  : (
+								<>
+									<li className="nav-item">
+										<a className="nav-link" aria-current="page" href="/">Home</a>
+									</li>
+									<li className="nav-item">
+										<a className="nav-link" href="/book">Agendar</a>
+									</li>
+								</>
+						    )
+						}
+
 					</ul>
 				</div>
 			</div>

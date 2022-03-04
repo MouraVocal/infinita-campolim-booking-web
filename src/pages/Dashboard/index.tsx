@@ -1,5 +1,31 @@
+import { useState, useEffect } from 'react'
+import { initializeApp } from 'firebase/app'
+import { getAuth, onAuthStateChanged, User, signOut } from 'firebase/auth'
+
+import { firebaseConfig } from '../../config/firebase'
+
 export const Dashboard: React.FC = () => {
+  initializeApp(firebaseConfig)
+  const auth = getAuth()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    const subscribe = onAuthStateChanged(auth, user => setUser(user))
+
+    return subscribe
+  }, [])
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => setUser(null))
+      .catch(error => console.log(error)
+      )
+  }
+
   return (
-		<div>Dashboard</div>
+    <>
+      <div>{user?.email}</div>
+      <button className='btn btn-danger' onClick={handleSignOut}>Deslogar</button>
+    </>
   )
 }

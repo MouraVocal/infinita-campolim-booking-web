@@ -23,6 +23,7 @@
         "react/react-in-jsx-scope": "off",
         "no-tabs": "off",
         "no-undef": "off",
-        "no-use-before-define":"off"
+        "no-use-before-define":"off",
+        "no-mixed-spaces-and-tabs":"off"
     }
 }
