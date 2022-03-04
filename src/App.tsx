@@ -1,8 +1,15 @@
-import { AppRoutes } from './routes/auth.routes'
+import { BrowserRouter } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import { Routes } from './routes/'
 
 function App () {
   return (
-		<AppRoutes />
+    <>
+      <Navbar />
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </>
   )
 }
 

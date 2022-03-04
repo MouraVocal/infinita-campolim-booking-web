@@ -1,15 +1,14 @@
 import { FormEvent, useState } from 'react'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, User } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
-import Navbar from '../../components/Navbar'
 
 export const SignIn: React.FC = () => {
-  const app = initializeApp(firebaseConfig)
+  initializeApp(firebaseConfig)
   const auth = getAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<User>({} as User)
   const [firebaseError, setFirebaseError] = useState('')
 
   function handleLogin (e: FormEvent) {
@@ -39,15 +38,14 @@ export const SignIn: React.FC = () => {
 
   return (
     <>
-      <Navbar />
       <div className="container p-5">
         <h1>Por favor, faça seu login</h1>
         <form onSubmit={handleLogin} className='needs-validation' noValidate>
           <div className="mb-3 border p-3">
-            <div>
+            <div className='mb-3'>
               <label htmlFor="emailInput" className="form-label">E-mail</label>
               <input
-                className="form-control mb-3"
+                className="form-control"
                 id="emailInput"
                 placeholder="seuemail@exemplo.com"
                 type="email"
@@ -61,10 +59,10 @@ export const SignIn: React.FC = () => {
               </div>
             </div>
 
-            <div>
+            <div className='mb-3'>
               <label htmlFor="password">Senha</label>
               <input
-                className="form-control mb-3"
+                className="form-control"
                 type="password"
                 name="password"
                 id="passwordInput"
@@ -80,6 +78,7 @@ export const SignIn: React.FC = () => {
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>
+        { user ? <div>{user.email}</div> : null }
       </div>
     </>
   )
