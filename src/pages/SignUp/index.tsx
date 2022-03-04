@@ -12,9 +12,12 @@ export const SignUp: React.FC = () => {
 
   function handleSignUp (e: FormEvent) {
     e.preventDefault()
-    createUserWithEmailAndPassword(auth, email, password)
-      .catch(error => setFirebaseError(error.message)
-      )
+    if (email && password) {
+      return createUserWithEmailAndPassword(auth, email, password)
+        .catch(error => setFirebaseError(error.message)
+        )
+    }
+    return alert('Por favor preencha os campos')
   }
 
   const forms = document.getElementsByClassName('needs-validation')
@@ -69,7 +72,7 @@ export const SignUp: React.FC = () => {
                 Por favor digite sua senha.
               </div>
             </div>
-            { firebaseError ? <p style={{ color: 'red' }}>Usuário e senha inválidos</p> : null }
+            { firebaseError ? <p style={{ color: 'red' }}>{firebaseError}</p> : null }
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>

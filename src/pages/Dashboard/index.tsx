@@ -17,7 +17,6 @@ export const Dashboard: React.FC = () => {
 
   const handleSignOut = () => {
     signOut(auth)
-      .then(() => setUser(null))
       .catch(error => console.log(error)
       )
   }

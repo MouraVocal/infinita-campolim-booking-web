@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
 
@@ -10,11 +10,21 @@ export const SignIn: React.FC = () => {
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
 
-  function handleSignIn (e: FormEvent) {
+  // Sign In with Google
+  const handleGoogleSignIn = () => {
+    const provider = new GoogleAuthProvider()
+    signInWithPopup(auth, provider)
+  }
+
+  // Sign In With e-mail and password
+  async function handleSignIn (e: FormEvent) {
     e.preventDefault()
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(error => setFirebaseError(error.message)
-      )
+    if (email && password) {
+      return signInWithEmailAndPassword(auth, email, password)
+        .catch(error => setFirebaseError(error.message)
+        )
+    }
+    return alert('Por favor preencha os campos')
   }
 
   const forms = document.getElementsByClassName('needs-validation')
@@ -69,10 +79,11 @@ export const SignIn: React.FC = () => {
                 Por favor digite sua senha.
               </div>
             </div>
-            { firebaseError ? <p style={{ color: 'red' }}>Usuário e senha inválidos</p> : null }
+            {firebaseError ? <p style={{ color: 'red' }}>Usuário e senha inválidos</p> : null}
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>
+        <button onClick={handleGoogleSignIn} className='btn btn-primary'>Google Login</button>
       </div>
     </>
   )

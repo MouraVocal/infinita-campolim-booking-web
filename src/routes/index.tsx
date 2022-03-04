@@ -16,6 +16,8 @@ export const Routes = () => {
     setloading(true)
     const subscribe = onAuthStateChanged(auth, user => {
       setUser(user)
+      console.log(auth.currentUser)
+
       setloading(false)
     })
 
