@@ -1,40 +1,57 @@
 import icon from '../../assets/icon.png'
 import { styles } from './styles'
 
-interface NavbarProps {
-	auth?: boolean
-}
+// Routes
+import { Link } from 'react-router-dom'
 
-export const Navbar = ({ auth = false }: NavbarProps): JSX.Element => {
+// Firebase
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
+import { initializeApp } from 'firebase/app'
+import { firebaseConfig } from '../../config/firebase'
+
+// Usestate
+import { useEffect, useState } from 'react'
+
+export const Navbar = (): JSX.Element => {
+  initializeApp(firebaseConfig)
+  const auth = getAuth()
+  const [user, setuser] = useState<User | null>(null)
+  useEffect(() => {
+    const subscribe = onAuthStateChanged(auth, user => {
+      setuser(user)
+    })
+
+    return subscribe
+  }, [])
   return (
 		<nav className="navbar navbar-expand-sm navbar-light bg-light">
 			<div className="container-fluid">
-				<a className="navbar-brand" href="#">
+				<Link className="navbar-brand" to="/">
 					<img src={icon} alt="infinita campolim logo" style={styles.icon} />
-				</a>
+				</Link>
 				<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
 				</button>
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav">
-						{auth
+						{user
 						  ? (
 								<>
 									<li className="nav-item">
-										<a className="nav-link" aria-current="page" href="/">Fazer Login</a>
+										<Link className="nav-link" aria-current="page" to="/dashboard">Painel de Controle</Link>
 									</li>
 									<li className="nav-item">
-										<a className="nav-link" href="signup">Cadastrar-se</a>
+										<Link className="nav-link" to="book">Agendar</Link>
 									</li>
 								</>
 						    )
 						  : (
 								<>
 									<li className="nav-item">
-										<a className="nav-link" aria-current="page" href="/dashboard">Painel de Controle</a>
+										<Link className="nav-link" aria-current="page" to="/">Fazer Login</Link>
 									</li>
 									<li className="nav-item">
-										<a className="nav-link" href="book">Agendar</a>
+										<Link className="nav-link" to="signup">Cadastrar-se</Link>
 									</li>
 								</>
 						    )

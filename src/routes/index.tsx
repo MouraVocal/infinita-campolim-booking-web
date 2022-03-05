@@ -9,9 +9,6 @@ import { initializeApp } from 'firebase/app'
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
 
-// Components
-import { Navbar } from '../components/Navbar'
-
 export const Routes = () => {
   initializeApp(firebaseConfig)
   const auth = getAuth()
@@ -41,20 +38,7 @@ export const Routes = () => {
         </>
         )
       : (
-          user
-            ? (
-            <>
-              <Navbar />
-              <AppRoutes />
-            </>
-              )
-            : (
-            <>
-              <Navbar auth />
-              <AuthRoutes />
-            </>
-              )
+          user ? <AppRoutes /> : <AuthRoutes />
         )
-
   )
 }
