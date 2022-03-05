@@ -5,11 +5,11 @@ interface NavbarProps {
 	auth?: boolean
 }
 
-export function Navbar ({ auth = false }: NavbarProps): JSX.Element {
+export const Navbar = ({ auth = false }: NavbarProps): JSX.Element => {
   return (
 		<nav className="navbar navbar-expand-sm navbar-light bg-light">
 			<div className="container-fluid">
-				<a className="navbar-brand" href="/">
+				<a className="navbar-brand" href="#">
 					<img src={icon} alt="infinita campolim logo" style={styles.icon} />
 				</a>
 				<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,22 +24,21 @@ export function Navbar ({ auth = false }: NavbarProps): JSX.Element {
 										<a className="nav-link" aria-current="page" href="/">Fazer Login</a>
 									</li>
 									<li className="nav-item">
-										<a className="nav-link" href="/signup">Cadastrar-se</a>
+										<a className="nav-link" href="signup">Cadastrar-se</a>
 									</li>
 								</>
 						    )
 						  : (
 								<>
 									<li className="nav-item">
-										<a className="nav-link" aria-current="page" href="/">Home</a>
+										<a className="nav-link" aria-current="page" href="/dashboard">Painel de Controle</a>
 									</li>
 									<li className="nav-item">
-										<a className="nav-link" href="/book">Agendar</a>
+										<a className="nav-link" href="book">Agendar</a>
 									</li>
 								</>
 						    )
 						}
-
 					</ul>
 				</div>
 			</div>

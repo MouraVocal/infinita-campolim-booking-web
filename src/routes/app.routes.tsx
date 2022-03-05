@@ -8,8 +8,8 @@ import { Dashboard } from '../pages/Dashboard'
 export function AppRoutes () {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/book" element={<Book />} />
+      <Route path='dashboard' element={<Dashboard />} />
+      <Route path="book" element={<Book />} />
     </Routes>
   )
 }

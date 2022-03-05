@@ -1,7 +1,12 @@
 import { FormEvent, useState } from 'react'
+
+// Firebase
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
+
+// Routes
+import { useNavigate } from 'react-router-dom'
 
 export const SignUp: React.FC = () => {
   initializeApp(firebaseConfig)
@@ -10,10 +15,13 @@ export const SignUp: React.FC = () => {
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
 
+  const navigate = useNavigate()
+
   function handleSignUp (e: FormEvent) {
     e.preventDefault()
     if (email && password) {
       return createUserWithEmailAndPassword(auth, email, password)
+        .then(() => navigate('/dashboard'))
         .catch(error => setFirebaseError(error.message)
         )
     }
@@ -72,7 +80,7 @@ export const SignUp: React.FC = () => {
                 Por favor digite sua senha.
               </div>
             </div>
-            { firebaseError ? <p style={{ color: 'red' }}>{firebaseError}</p> : null }
+            {firebaseError ? <p style={{ color: 'red' }}>{firebaseError}</p> : null}
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>

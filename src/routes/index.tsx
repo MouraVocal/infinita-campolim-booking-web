@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react'
+
+// Firebase
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
-import { AuthRoutes } from './auth.routes'
 import { firebaseConfig } from '../config/firebase'
 import { initializeApp } from 'firebase/app'
+
+// Routes
+import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
+
+// Components
 import { Navbar } from '../components/Navbar'
 
 export const Routes = () => {
@@ -17,7 +23,6 @@ export const Routes = () => {
     const subscribe = onAuthStateChanged(auth, user => {
       setUser(user)
       console.log(auth.currentUser)
-
       setloading(false)
     })
 
