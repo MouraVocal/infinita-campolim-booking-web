@@ -5,9 +5,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
 
-// Routes
-import { useNavigate } from 'react-router-dom'
-
 export const SignUp: React.FC = () => {
   initializeApp(firebaseConfig)
   const auth = getAuth()
@@ -15,13 +12,10 @@ export const SignUp: React.FC = () => {
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
 
-  const navigate = useNavigate()
-
   function handleSignUp (e: FormEvent) {
     e.preventDefault()
     if (email && password) {
       return createUserWithEmailAndPassword(auth, email, password)
-        .then(() => navigate('/dashboard'))
         .catch(error => setFirebaseError(error.message)
         )
     }

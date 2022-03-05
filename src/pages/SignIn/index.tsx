@@ -8,9 +8,6 @@ import { initializeApp } from 'firebase/app'
 // assets
 import googleLogo from '../../assets/google.svg'
 
-// Routes
-import { useNavigate } from 'react-router-dom'
-
 export const SignIn: React.FC = () => {
   initializeApp(firebaseConfig)
   const auth = getAuth()
@@ -18,13 +15,10 @@ export const SignIn: React.FC = () => {
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
 
-  const navigate = useNavigate()
-
   // Sign In with Google
   const handleGoogleSignIn = () => {
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
-      .then(() => navigate('/dashboard'))
   }
 
   // Sign In With e-mail and password
@@ -32,7 +26,6 @@ export const SignIn: React.FC = () => {
     e.preventDefault()
     if (email && password) {
       return signInWithEmailAndPassword(auth, email, password)
-        .then(() => navigate('/dashboard'))
         .catch(error => setFirebaseError(error.message)
         )
     }

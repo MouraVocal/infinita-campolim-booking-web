@@ -8,6 +8,7 @@ import { initializeApp } from 'firebase/app'
 // Routes
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
+import { useNavigate } from 'react-router-dom'
 
 export const Routes = () => {
   initializeApp(firebaseConfig)
@@ -15,10 +16,13 @@ export const Routes = () => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setloading] = useState(false)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     setloading(true)
     const subscribe = onAuthStateChanged(auth, user => {
       setUser(user)
+      user ? navigate('/dashboard') : navigate('/')
       console.log(auth.currentUser)
       setloading(false)
     })
