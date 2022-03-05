@@ -1,7 +1,12 @@
 import { FormEvent, useState } from 'react'
+
+// Firebase
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
+
+// assets
+import googleLogo from '../../assets/google.svg'
 
 export const SignIn: React.FC = () => {
   initializeApp(firebaseConfig)
@@ -83,7 +88,12 @@ export const SignIn: React.FC = () => {
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>
-        <button onClick={handleGoogleSignIn} className='btn btn-primary'>Google Login</button>
+        <hr />
+        <p className='text-center'>ou</p>
+        <button onClick={handleGoogleSignIn} className='btn btn-danger w-100'>
+          <img src={googleLogo} alt="googlelogo" className='m-3 img-fluid' />
+          Entrar com Google
+        </button>
       </div>
     </>
   )
