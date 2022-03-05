@@ -9,6 +9,7 @@ import { initializeApp } from 'firebase/app'
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
 import { useNavigate } from 'react-router-dom'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 
 export const Routes = () => {
   initializeApp(firebaseConfig)
@@ -33,13 +34,7 @@ export const Routes = () => {
   return (
     loading
       ? (
-        <>
-          <div className="d-flex justify-content-center align-items-center vw-100 vh-100">
-            <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        </>
+        <LoadingSpinner />
         )
       : (
           user ? <AppRoutes /> : <AuthRoutes />

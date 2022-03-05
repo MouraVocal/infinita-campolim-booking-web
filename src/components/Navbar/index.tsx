@@ -16,15 +16,21 @@ export const Navbar = (): JSX.Element => {
   initializeApp(firebaseConfig)
   const auth = getAuth()
   const [user, setuser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    setLoading(true)
     const subscribe = onAuthStateChanged(auth, user => {
-      setuser(user)
+      Promise.resolve(setuser(user))
+        .then(() => setLoading(false))
     })
 
     return subscribe
   }, [])
+
   return (
-		<nav className="navbar navbar-expand-sm navbar-light bg-light">
+    loading
+      ?		<div></div>
+      :		<nav className="navbar navbar-expand-sm navbar-light bg-light">
 			<div className="container-fluid">
 				<Link className="navbar-brand" to="/">
 					<img src={icon} alt="infinita campolim logo" style={styles.icon} />

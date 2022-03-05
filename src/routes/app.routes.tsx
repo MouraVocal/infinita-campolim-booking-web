@@ -10,6 +10,7 @@ export function AppRoutes () {
     <Routes>
       <Route path='dashboard' element={<Dashboard />} />
       <Route path="book" element={<Book />} />
+      <Route path='*' element={<Dashboard />} />
     </Routes>
   )
 }
