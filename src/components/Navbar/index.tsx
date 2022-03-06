@@ -1,11 +1,10 @@
 import icon from '../../assets/icon.png'
-import { styles } from './styles'
-
+import './styles.css'
 // Routes
 import { Link } from 'react-router-dom'
 
 // Firebase
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, User, signOut } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../../config/firebase'
 
@@ -23,11 +22,16 @@ export const Navbar = (): JSX.Element => {
 
     return subscribe
   }, [])
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .catch(error => console.log(error))
+  }
   return (
 		<nav className="navbar navbar-expand-sm navbar-light bg-light">
 			<div className="container-fluid">
 				<Link className="navbar-brand" to="/">
-					<img src={icon} alt="infinita campolim logo" style={styles.icon} />
+					<img src={icon} alt="infinita campolim logo" id='icon' />
 				</Link>
 				<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
@@ -43,6 +47,7 @@ export const Navbar = (): JSX.Element => {
 									<li className="nav-item">
 										<Link className="nav-link" to="book">Agendar</Link>
 									</li>
+									<button className='btn btn-danger' id='signoutbtn' onClick={handleSignOut}>Deslogar</button>
 								</>
 						    )
 						  : (
