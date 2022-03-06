@@ -11,7 +11,7 @@ export function UserCard () {
         <img src={user?.photoURL || 'https://loremflickr.com/100/100'} alt="User Photo" className='img-fluid rounded' />
       </div>
       <div className='p-3'>
-        <b>Bem vindo,</b>
+        <h6>Bem vindo(a),</h6>
         <h2>{user?.displayName || 'usuário'}</h2>
         <i>{user?.email}</i>
       </div>
