@@ -20,8 +20,8 @@ export const Routes = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    setloading(true)
     const subscribe = onAuthStateChanged(auth, user => {
+      setloading(true)
       setUser(user)
       user ? navigate('/dashboard') : navigate('/')
       console.log(auth.currentUser)
