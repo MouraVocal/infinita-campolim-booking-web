@@ -51,7 +51,7 @@ export const Navbar = (): JSX.Element => {
 										<Link className="nav-link" aria-current="page" to="/dashboard">Painel de Controle</Link>
 									</li>
 									<li className="nav-item">
-										<Link className="nav-link" to="book">Agendar</Link>
+										<Link className="nav-link" to="booking">Agendar</Link>
 									</li>
 									<button className='btn btn-danger' id='signoutbtn' onClick={handleSignOut}>Deslogar</button>
 								</>

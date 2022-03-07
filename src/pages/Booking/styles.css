@@ -1,0 +1,4 @@
+.onclick:hover {
+  background-color: rgb(208, 240, 240);
+  cursor: pointer;
+}

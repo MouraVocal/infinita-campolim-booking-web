@@ -2,15 +2,17 @@ import {
   Route,
   Routes
 } from 'react-router-dom'
-import { Book } from '../pages/Book'
+import { Booking } from '../pages/Booking'
 import { Dashboard } from '../pages/Dashboard'
+import { Environment } from '../pages/Environment'
 
 export function AppRoutes () {
   return (
     <Routes>
       <Route path='dashboard' element={<Dashboard />} />
-      <Route path="book" element={<Book />} />
+      <Route path="booking" element={<Booking />} />
       <Route path='*' element={<Dashboard />} />
+			<Route path='environments' element={<Environment />} />
     </Routes>
   )
 }
