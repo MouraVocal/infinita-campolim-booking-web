@@ -12,7 +12,7 @@ export function AppRoutes () {
       <Route path='dashboard' element={<Dashboard />} />
       <Route path="booking" element={<Booking />} />
       <Route path='*' element={<Dashboard />} />
-			<Route path='environments' element={<Environment />} />
+			<Route path='environments/:environment' element={<Environment />} />
     </Routes>
   )
 }

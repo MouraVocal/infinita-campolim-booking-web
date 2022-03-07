@@ -1,5 +1,8 @@
+import { useParams } from 'react-router-dom'
+
 export function Environment () {
+  const { environment } = useParams()
   return (
-    <div>Environment</div>
+    <div>{environment}</div>
   )
 }
