@@ -35,6 +35,7 @@ export const UserSchedules: React.FC = () => {
   const auth = getAuth()
 
   const userId = auth.currentUser?.uid
+
   const [schedules, setSchedules] = useState<DocumentData[]>([])
 
   const querySnapshot = async (db: Firestore) => {
@@ -52,21 +53,25 @@ export const UserSchedules: React.FC = () => {
 
   return (
     <div className='container-fluid'>
-      <h4>Seus agendamentos</h4>
+      <h4>Seus últimos agendamentos</h4>
       {
         schedules.length
           ? (
               schedules.map(item => (
-              <div key={uuidv4()} className='d-flex border rounded align-items-center'>
-                <div style={{ height: 100, width: 100 }}>
-                  <img src={photo(item.local)} className='rounded' style={{ height: 100, width: 100 }} alt="foto" />
-                  </div>
-                <div className='border m-4'>
-                  <p >{item.local}</p>
-                  <p>{item.date}/{item.month}/{item.year}</p>
+              <div key={uuidv4()} className='d-flex border rounded align-items-center p-2 mb-2'>
+                <div>
+                  <img src={photo(item.local)} className='rounded img-fluid' alt="foto" />
+                </div>
+                <div className='px-2'>
+                  <b>{item.local}</b>
+                  <p>{item.date}/{item.month + 1}/{item.year}</p>
                   <p>Das {item.initialHour}h às {item.finalHour}h</p>
                 </div>
-                <div>cancelar</div>
+                <div className='px-3'>
+                  <button className='btn btn-danger'>
+                    cancelar
+                  </button>
+                </div>
               </div>
               ))
             )
