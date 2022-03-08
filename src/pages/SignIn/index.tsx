@@ -7,6 +7,7 @@ import { initializeApp } from 'firebase/app'
 
 // assets
 import googleLogo from '../../assets/google.svg'
+import { LoadingSpinner } from '../../components/LoadingSpinner'
 
 export const SignIn: React.FC = () => {
   initializeApp(firebaseConfig)
@@ -14,19 +15,29 @@ export const SignIn: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   // Sign In with Google
   const handleGoogleSignIn = () => {
+    setLoading(true)
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
+      .catch(error => {
+        setFirebaseError(error.message)
+        setLoading(false)
+      })
   }
 
   // Sign In With e-mail and password
   async function handleSignIn (e: FormEvent) {
+    setLoading(true)
     e.preventDefault()
     if (email && password) {
       return signInWithEmailAndPassword(auth, email, password)
-        .catch(error => setFirebaseError(error.message)
+        .catch(error => {
+          setFirebaseError(error.message)
+          setLoading(false)
+        }
         )
     }
     return alert('Por favor preencha os campos')
@@ -47,7 +58,9 @@ export const SignIn: React.FC = () => {
     })
 
   return (
-    <>
+    loading
+      ? <LoadingSpinner />
+      : <>
       <div className="container p-5">
         <h1>Por favor, faça seu login</h1>
         <form onSubmit={handleSignIn} className='needs-validation' noValidate>

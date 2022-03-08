@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react'
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
+import { LoadingSpinner } from '../../components/LoadingSpinner'
 
 export const SignUp: React.FC = () => {
   initializeApp(firebaseConfig)
@@ -11,12 +12,17 @@ export const SignUp: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firebaseError, setFirebaseError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   function handleSignUp (e: FormEvent) {
+    setLoading(true)
     e.preventDefault()
     if (email && password) {
       return createUserWithEmailAndPassword(auth, email, password)
-        .catch(error => setFirebaseError(error.message)
+        .catch(error => {
+          setFirebaseError(error.message)
+          setLoading(false)
+        }
         )
     }
     return alert('Por favor preencha os campos')
@@ -37,7 +43,9 @@ export const SignUp: React.FC = () => {
     })
 
   return (
-    <>
+    loading
+      ? <LoadingSpinner />
+      : <>
       <div className="container p-5">
         <h1>Por favor, crie seu usuário</h1>
         <form onSubmit={handleSignUp} className='needs-validation' noValidate>
