@@ -17,7 +17,7 @@ export const Booking: React.FC = () => {
   const navigate = useNavigate()
   return (
     <div className='container-fluid mb-3'>
-      <h3 className='text-center'>Escolha onde você quer agendar</h3>
+      <h3 className='text-center my-4'>Por favor, escolha o ambiente</h3>
       <div className='d-flex flex-wrap align-items-center justify-content-center'>
         <div className='onclick' onClick={() => navigate('/environments/gym')}>
           <EnviromentCard src={Academia} title='Academia' />

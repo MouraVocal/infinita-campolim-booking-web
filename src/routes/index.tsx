@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 
 export const Routes = () => {
+  const [loading, setloading] = useState(true)
   initializeApp(firebaseConfig)
   const auth = getAuth()
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setloading] = useState(false)
 
   const navigate = useNavigate()
 

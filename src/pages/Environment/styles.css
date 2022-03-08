@@ -1,0 +1,12 @@
+#head {
+  height: 5vh;
+  background-color: #000;
+  background-image: url('../../assets/academia.jpeg');
+  background-size: cover;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  -webkit-text-stroke-color: #000;
+  -webkit-text-stroke-width: 1px;
+}
