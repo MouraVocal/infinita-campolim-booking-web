@@ -1,12 +1,9 @@
 #head {
-  height: 5vh;
-  background-color: #000;
-  background-image: url('../../assets/academia.jpeg');
-  background-size: cover;
+  height: 40px;
+  background-image: linear-gradient(to right, #000, #e5e5e5);
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  -webkit-text-stroke-color: #000;
-  -webkit-text-stroke-width: 1px;
+  padding-left: 10px;
 }
