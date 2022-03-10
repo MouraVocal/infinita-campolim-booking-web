@@ -1,4 +1,7 @@
-hour-container {
-  border: 1px solid #000;
-  padding: 2px;
+.hour-container {
+  background-image: linear-gradient(to bottom right ,rgba(135, 103, 252, 0.5), white)
+}
+
+.hour-container:hover {
+  background-color: rgba(135, 103, 252, 0.8);
 }

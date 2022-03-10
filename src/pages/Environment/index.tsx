@@ -7,16 +7,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { useParams } from 'react-router-dom'
 
 // Firebase
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore'
-import { firebaseConfig } from '../../config/firebase'
+import { collection, getDocs, query, where, DocumentData } from 'firebase/firestore'
+import { db } from '../../config/firebase'
+import { getAuth } from 'firebase/auth'
 
 // Styles
 import './styles.css'
 import { LoadingSpinner } from '../../components/LoadingSpinner'
 import { HourContainer } from '../../components/HourContainer'
 
-// Excluding undefined in useParams types to use as an object value
+// Excluding undefined type in useParams types to use as an object entry
 declare module 'react-router-dom' {
   export function useParams<
     P extends Record<string, string | undefined> = {
@@ -36,15 +36,16 @@ export function Environment () {
     partyroom: 'Salão de Festas',
     sportscourt: 'Quadra'
   }
-  // Initialize Firebase
-  initializeApp(firebaseConfig)
-  const db = getFirestore()
+
+  const userId = getAuth().currentUser
 
   // States
   // const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [date, setDate] = useState('2021-07-19')
   const [loading, setLoading] = useState(false)
-  const [serverHours, setServerHours] = useState<{}[]>([])
+  const [schedules, setSchedules] = useState<DocumentData[]>([])
+  const [openedAt, setOpenedAt] = useState('')
+  const [closedAt, setClosedAt] = useState('')
 
   // Get Data
   async function getData (date: string) {
@@ -58,20 +59,26 @@ export function Environment () {
     const q = query(docsRef, docFilterDate, docFilterMonth, docFilterYear, docFilterEnvironment)
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach(doc => {
-      console.log(doc.data())
-      setServerHours(prevState => [...prevState, doc.data()])
+      setSchedules(prevState => [...prevState, doc.data()])
     })
     setLoading(false)
   }
 
-  async function getOpeningHours () {
+  async function getEnviromentData () {
     const environmentEntry = toPtBr[environment].split(' ').join('')
-    console.log(environmentEntry)
+    const docsRef = collection(db, 'boards')
+    const querySnapshot = await getDocs(docsRef)
+    querySnapshot.forEach(item => {
+      if (item.id === environmentEntry) {
+        setClosedAt(item.data().closedAt)
+        setOpenedAt(item.data().openedAt)
+      }
+    })
   }
 
   useEffect(() => {
     getData(date)
-    getOpeningHours()
+    getEnviromentData()
   }, [])
 
   return (
@@ -81,7 +88,7 @@ export function Environment () {
         {loading
           ? <LoadingSpinner />
           : <>
-            <label htmlFor="datepicker" className='px-3'>Escolha a data:</label>
+            <label htmlFor="datepicker" className='p-3'>Escolha a data:</label>
             <input
               type="date"
               min={new Date().toISOString().split('T')[0]}
@@ -94,9 +101,16 @@ export function Environment () {
           </>
         }
       </div>
-      <div>
+      <p className='text-center fst-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
+      <h4 className='text-center p-4'>Escolha um dos horários disponíveis:</h4>
+      <div className='d-flex flex-wrap justify-content-center' onClick={() => alert('teste')}>
         {
-          serverHours.map(item => <HourContainer key={uuidv4()} openedAt={item.initialHour} closedAt={item.finalHour} />)
+          schedules.map(item => {
+            if (item.user === userId) {
+              return <div>Você já agendou</div>
+            }
+            return <HourContainer key={uuidv4()} initialHour={item.initialHour} finalHour={item.finalHour} />
+          })
         }
       </div>
     </>
