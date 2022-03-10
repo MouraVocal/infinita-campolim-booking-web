@@ -1,7 +1,21 @@
 .hour-container {
-  background-image: linear-gradient(to bottom right ,rgba(135, 103, 252, 0.5), white)
+  background-image: linear-gradient(to bottom right ,rgba(135, 103, 252, 0.6), white)
 }
 
 .hour-container:hover {
-  background-color: rgba(135, 103, 252, 0.8);
+  background-color: rgba(135, 103, 252, 0.9);
+}
+
+.hour-container:active {
+  background-color: rgba(135, 103, 252);
+}
+
+.scheduled-hour-container {
+  color: #999999;
+  border: 1px solid #e5e5e5
+}
+
+.user-scheduled-hour-container {
+  color: rgb(9, 112, 0);
+  border: 1px solid #e5e5e5
 }

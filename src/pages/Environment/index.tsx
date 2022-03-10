@@ -26,9 +26,6 @@ declare module 'react-router-dom' {
 }
 
 export function Environment () {
-  // Getting Params
-  const { environment } = useParams<{ environment: 'gym' | 'pool' | 'partyroom' | 'sportscourt' }>()
-
   // Translating
   const toPtBr = {
     gym: 'Academia',
@@ -37,11 +34,15 @@ export function Environment () {
     sportscourt: 'Quadra'
   }
 
-  const userId = getAuth().currentUser
+  // Getting Params
+  const { environment } = useParams<{ environment: 'gym' | 'pool' | 'partyroom' | 'sportscourt' }>()
+  const environmentEntry = toPtBr[environment].split(' ').join('')
+
+  // const userId = getAuth().currentUser
+  const userId = getAuth().currentUser?.uid
 
   // States
-  // const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-  const [date, setDate] = useState('2021-07-19')
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [loading, setLoading] = useState(false)
   const [schedules, setSchedules] = useState<DocumentData[]>([])
   const [openedAt, setOpenedAt] = useState('')
@@ -65,7 +66,6 @@ export function Environment () {
   }
 
   async function getEnviromentData () {
-    const environmentEntry = toPtBr[environment].split(' ').join('')
     const docsRef = collection(db, 'boards')
     const querySnapshot = await getDocs(docsRef)
     querySnapshot.forEach(item => {
@@ -80,6 +80,19 @@ export function Environment () {
     getData(date)
     getEnviromentData()
   }, [])
+
+  interface renderHoursType {
+    openedAt: number
+    closedAt: number
+  }
+  const renderHours: renderHoursType[] = []
+  const actualDate = new Date()
+  const actualHour = Number(new Date().getHours())
+  const selectedDate = new Date(date)
+
+  for (let i = Number(openedAt); i < Number(closedAt); i++) {
+    renderHours.push({ openedAt: i, closedAt: i + 1 })
+  }
 
   return (
     <>
@@ -101,15 +114,21 @@ export function Environment () {
           </>
         }
       </div>
-      <p className='text-center fst-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
+      <p className='text-center font-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
       <h4 className='text-center p-4'>Escolha um dos horários disponíveis:</h4>
-      <div className='d-flex flex-wrap justify-content-center' onClick={() => alert('teste')}>
+      <div className='d-flex flex-wrap justify-content-center'>
         {
-          schedules.map(item => {
-            if (item.user === userId) {
-              return <div>Você já agendou</div>
+          renderHours.map(item => {
+            if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
+              return null
             }
-            return <HourContainer key={uuidv4()} initialHour={item.initialHour} finalHour={item.finalHour} />
+            if (schedules.find(schedule => schedule.initialHour === item.openedAt)) {
+              if (schedules.find(schedule => schedule.user === userId)) {
+                return <HourContainer userScheduled text='Você agendou' />
+              }
+              return <HourContainer scheduled text='Agendado' />
+            }
+            return <HourContainer key={uuidv4()} text={`das ${item.openedAt}h até ${item.closedAt}h`}/>
           })
         }
       </div>

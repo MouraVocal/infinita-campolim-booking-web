@@ -1,12 +1,21 @@
 import './styles.css'
 
 interface HourContainerProps {
-  initialHour: string
-  finalHour: string
+  text: string
+  scheduled?: boolean
+  userScheduled?: boolean
 }
 
-export function HourContainer ({ initialHour, finalHour }: HourContainerProps) {
+export function HourContainer ({ text, scheduled, userScheduled }: HourContainerProps) {
+  if (scheduled) {
+    return <button type='button' disabled className="scheduled-hour-container border w-auto p-2 rounded mx-2 mb-3">{text}</button>
+  }
+
+  if (userScheduled) {
+    return <button type='button' disabled className="user-scheduled-hour-container border w-auto p-2 rounded mx-2 mb-3">{text}</button>
+  }
+
   return (
-    <div className="hour-container border w-auto p-2 rounded mx-2 mb-3">das {initialHour}h às {finalHour}h</div>
+    <button type='button' onClick={() => alert('teste')} className="hour-container border w-auto p-2 rounded mx-2 mb-3">{text}</button>
   )
 }
