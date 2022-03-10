@@ -13,8 +13,11 @@ import { getAuth } from 'firebase/auth'
 
 // Styles
 import './styles.css'
+
+// Components
 import { LoadingSpinner } from '../../components/LoadingSpinner'
 import { HourContainer } from '../../components/HourContainer'
+import PostCard from '../../components/PostsCard'
 
 // Excluding undefined type in useParams types to use as an object entry
 declare module 'react-router-dom' {
@@ -38,7 +41,6 @@ export function Environment () {
   const { environment } = useParams<{ environment: 'gym' | 'pool' | 'partyroom' | 'sportscourt' }>()
   const environmentEntry = toPtBr[environment].split(' ').join('')
 
-  // const userId = getAuth().currentUser
   const userId = getAuth().currentUser?.uid
 
   // States
@@ -47,6 +49,7 @@ export function Environment () {
   const [schedules, setSchedules] = useState<DocumentData[]>([])
   const [openedAt, setOpenedAt] = useState('')
   const [closedAt, setClosedAt] = useState('')
+  const [posts, setPosts] = useState<DocumentData[]>([])
 
   // Get Data
   async function getData (date: string) {
@@ -76,20 +79,34 @@ export function Environment () {
     })
   }
 
+  async function getBoards () {
+    setPosts([])
+    const docsRef = collection(db, `boards/${environmentEntry}/posts`)
+    const querySnapshot = await getDocs(docsRef)
+    querySnapshot.forEach(doc => {
+      setPosts(prevState => [...prevState, doc.data()])
+    })
+  }
+
   useEffect(() => {
     getData(date)
     getEnviromentData()
-  }, [])
+    getBoards()
+  }, [environment])
 
-  interface renderHoursType {
+  // Interfaces
+  interface IrenderHours {
     openedAt: number
     closedAt: number
   }
-  const renderHours: renderHoursType[] = []
+
+  // Time Helpers
+  const renderHours: IrenderHours[] = []
   const actualDate = new Date()
   const actualHour = Number(new Date().getHours())
   const selectedDate = new Date(date)
 
+  // Render buttons for schedules
   for (let i = Number(openedAt); i < Number(closedAt); i++) {
     renderHours.push({ openedAt: i, closedAt: i + 1 })
   }
@@ -98,9 +115,11 @@ export function Environment () {
     <>
       <div id='head'>{toPtBr[environment]}</div>
       <div className='d-flex py-3 justify-content-center align-items-center'>
-        {loading
-          ? <LoadingSpinner />
-          : <>
+
+        {
+          loading
+            ? <LoadingSpinner />
+            : <>
             <label htmlFor="datepicker" className='p-3'>Escolha a data:</label>
             <input
               type="date"
@@ -113,10 +132,12 @@ export function Environment () {
             />
           </>
         }
+
       </div>
       <p className='text-center font-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
       <h4 className='text-center p-4'>Escolha um dos horários disponíveis:</h4>
       <div className='d-flex flex-wrap justify-content-center'>
+
         {
           renderHours.map(item => {
             if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
@@ -130,6 +151,11 @@ export function Environment () {
             }
             return <HourContainer key={uuidv4()} text={`das ${item.openedAt}h até ${item.closedAt}h`}/>
           })
+        }
+
+      <h4 className='text-center py-2'>Notícias de {toPtBr[environment]}</h4>
+        {
+          posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} />)
         }
       </div>
     </>

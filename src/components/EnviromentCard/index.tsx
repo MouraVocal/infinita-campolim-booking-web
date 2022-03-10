@@ -8,7 +8,7 @@ export function EnviromentCard ({ src, title }: EnvironmentCardProps) {
     <div className='align-items-center'>
     <h6 className="text-center">{title}</h6>
     <div className='container'>
-      <img className="rounded" src={src} alt="foto academia" />
+      <img className="rounded" src={src} alt={`foto ${title}`} />
     </div>
     </div>
   )
