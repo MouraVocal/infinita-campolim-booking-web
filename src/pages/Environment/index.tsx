@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { useParams } from 'react-router-dom'
 
 // Firebase
-import { collection, getDocs, query, where, DocumentData } from 'firebase/firestore'
+import { collection, getDocs, query, where, DocumentData, onSnapshot } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import { getAuth } from 'firebase/auth'
 
@@ -57,18 +57,23 @@ export function Environment () {
     setDate(date)
     const docsRef = collection(db, 'schedules')
     const docFilterDate = where('date', '==', new Date(date).getDate() + 1)
-    const docFilterMonth = where('month', '==', new Date(date).getMonth() + 1)
+    const docFilterMonth = where('month', '==', new Date(date).getMonth())
     const docFilterYear = where('year', '==', new Date(date).getFullYear())
     const docFilterEnvironment = where('local', '==', toPtBr[environment])
     const q = query(docsRef, docFilterDate, docFilterMonth, docFilterYear, docFilterEnvironment)
-    const querySnapshot = await getDocs(q)
-    querySnapshot.forEach(doc => {
-      setSchedules(prevState => [...prevState, doc.data()])
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      querySnapshot.forEach(doc => {
+        setSchedules(prevState => [...prevState, doc.data()])
+      })
     })
+
+    console.log(schedules)
     setLoading(false)
+    return unsubscribe
   }
 
   async function getEnviromentData () {
+    setLoading(true)
     const docsRef = collection(db, 'boards')
     const querySnapshot = await getDocs(docsRef)
     querySnapshot.forEach(item => {
@@ -77,22 +82,25 @@ export function Environment () {
         setOpenedAt(item.data().openedAt)
       }
     })
+    setLoading(false)
   }
 
   async function getBoards () {
+    setLoading(true)
     setPosts([])
     const docsRef = collection(db, `boards/${environmentEntry}/posts`)
     const querySnapshot = await getDocs(docsRef)
     querySnapshot.forEach(doc => {
       setPosts(prevState => [...prevState, doc.data()])
     })
+    setLoading(false)
   }
 
   useEffect(() => {
     getData(date)
     getEnviromentData()
     getBoards()
-  }, [environment])
+  }, [])
 
   // Interfaces
   interface IrenderHours {
@@ -112,53 +120,76 @@ export function Environment () {
   }
 
   return (
-    <>
-      <div id='head'>{toPtBr[environment]}</div>
-      <div className='d-flex py-3 justify-content-center align-items-center'>
+    loading
+      ? <LoadingSpinner />
+      : <>
+        <div id='head'>{toPtBr[environment]}</div>
+        <div className='d-flex py-3 justify-content-center align-items-center'>
 
-        {
-          loading
-            ? <LoadingSpinner />
-            : <>
-            <label htmlFor="datepicker" className='p-3'>Escolha a data:</label>
-            <input
-              type="date"
-              min={new Date().toISOString().split('T')[0]}
-              name="datepicker"
-              id="datepicker"
-              className='form-control w-auto'
-              value={date}
-              onChange={(value) => getData(value.target.value)}
-            />
-          </>
-        }
+          {
+            <>
+              <label htmlFor="datepicker" className='p-3'>Escolha a data:</label>
+              <input
+                type="date"
+                min={new Date().toISOString().split('T')[0]}
+                name="datepicker"
+                id="datepicker"
+                className='form-control w-auto'
+                value={date}
+                onChange={(value) => getData(value.target.value)}
+              />
+            </>
+          }
 
-      </div>
-      <p className='text-center font-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
-      <h4 className='text-center p-4'>Escolha um dos horários disponíveis:</h4>
-      <div className='d-flex flex-wrap justify-content-center'>
+        </div>
+        <p className='text-center font-italic'>Funcionamento: das {openedAt}h às {closedAt}h</p>
+        <h4 className='text-center p-4'>Escolha um dos horários disponíveis:</h4>
+        <div className='d-flex flex-wrap justify-content-center'>
 
-        {
-          renderHours.map(item => {
-            if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
-              return null
-            }
-            if (schedules.find(schedule => schedule.initialHour === item.openedAt)) {
-              if (schedules.find(schedule => schedule.user === userId)) {
-                return <HourContainer userScheduled text='Você agendou' />
+          {
+            renderHours.map(item => {
+              if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
+                return null
               }
-              return <HourContainer scheduled text='Agendado' />
-            }
-            return <HourContainer key={uuidv4()} text={`das ${item.openedAt}h até ${item.closedAt}h`}/>
-          })
-        }
-      </div>
-      <div className='d-flex flex-wrap justify-content-center'>
-      <h4 className='text-center py-2'>Notícias de {toPtBr[environment]}</h4>
-        {
-          posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
-        }
-      </div>
-    </>
+              if (schedules.find(schedule => schedule.initialHour === item.openedAt)) {
+                if (schedules.find(schedule => schedule.user === userId)) {
+                  return <HourContainer
+                    environment={toPtBr[environment]}
+                    initialHour={item.openedAt}
+                    finalHour={item.closedAt}
+                    selectedDate={selectedDate}
+                    userScheduled
+                    key={uuidv4()}
+                    text='Você agendou'
+                  />
+                }
+                return <HourContainer
+                  environment={toPtBr[environment]}
+                  initialHour={item.openedAt}
+                  finalHour={item.closedAt}
+                  selectedDate={selectedDate}
+                  scheduled
+                  key={uuidv4()}
+                  text='Agendado'
+                />
+              }
+              return <HourContainer
+                environment={toPtBr[environment]}
+                initialHour={item.openedAt}
+                finalHour={item.closedAt}
+                selectedDate={selectedDate}
+                key={uuidv4()}
+                text={`das ${item.openedAt}h até ${item.closedAt}h`}
+              />
+            })
+          }
+        </div>
+        <div className='d-flex flex-wrap justify-content-center'>
+          <h4 className='text-center py-2'>Notícias de {toPtBr[environment]}</h4>
+          {
+            posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
+          }
+        </div>
+      </>
   )
 }

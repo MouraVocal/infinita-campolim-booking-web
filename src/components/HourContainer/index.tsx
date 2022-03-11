@@ -1,12 +1,57 @@
+import { useState } from 'react'
+
+// Firebase
+import { doc, setDoc } from 'firebase/firestore'
+import { db } from '../../config/firebase'
+import { getAuth } from 'firebase/auth'
+
+// Style
 import './styles.css'
 
+// Interfaces
 interface HourContainerProps {
   text: string
   scheduled?: boolean
   userScheduled?: boolean
+  initialHour: number
+  finalHour: number
+  selectedDate: Date
+  environment: string
 }
 
-export function HourContainer ({ text, scheduled, userScheduled }: HourContainerProps) {
+export function HourContainer ({ text, scheduled, userScheduled, initialHour, finalHour, selectedDate, environment }: HourContainerProps) {
+  // States
+  const [loading, setLoading] = useState(false)
+
+  // Functions
+  const addZero = (number: number) => {
+    return String(number).length < 2 ? `0${number}` : number
+  }
+
+  // Consts
+  const scheduleId = `${addZero(initialHour)}${addZero(finalHour)}${addZero(Number(selectedDate.getDate()))}${addZero(Number(selectedDate.getMonth() + 1))}${addZero(Number(selectedDate.getFullYear()))}${environment}`
+  const user = getAuth().currentUser
+
+  const handleClick = async () => {
+    setLoading(true)
+    alert('Você está agendando')
+    await setDoc(doc(db, 'schedules', scheduleId), {
+      apt: 'teste',
+      date: selectedDate.getDate() + 1,
+      finalHour: finalHour,
+      initialHour: initialHour,
+      isChecked: false,
+      local: environment,
+      month: selectedDate.getMonth(),
+      name: user?.displayName,
+      photo: user?.photoURL,
+      tower: 'teste',
+      user: user?.uid,
+      year: selectedDate.getFullYear()
+    })
+    setLoading(false)
+  }
+
   if (scheduled) {
     return <button type='button' disabled className="scheduled-hour-container border w-auto p-2 rounded mx-2 mb-3">{text}</button>
   }
@@ -16,6 +61,10 @@ export function HourContainer ({ text, scheduled, userScheduled }: HourContainer
   }
 
   return (
-    <button type='button' onClick={() => alert('teste')} className="hour-container border w-auto p-2 rounded mx-2 mb-3">{text}</button>
+    <button type='button' disabled={loading} onClick={handleClick} className="hour-container border w-auto p-2 rounded mx-2 mb-3">{loading
+      ? <div className="spinner-border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+      : text}</button>
   )
 }
