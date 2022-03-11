@@ -152,10 +152,11 @@ export function Environment () {
             return <HourContainer key={uuidv4()} text={`das ${item.openedAt}h até ${item.closedAt}h`}/>
           })
         }
-
+      </div>
+      <div className='d-flex flex-wrap justify-content-center'>
       <h4 className='text-center py-2'>Notícias de {toPtBr[environment]}</h4>
         {
-          posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} />)
+          posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
         }
       </div>
     </>
