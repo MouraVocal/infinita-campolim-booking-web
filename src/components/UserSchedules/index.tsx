@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-// Firestore
-import { collection, DocumentData, where, query, doc, deleteDoc, onSnapshot } from 'firebase/firestore'
+// Firebase
+import { collection, DocumentData, where, query, doc, deleteDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { db } from '../../config/firebase'
 
@@ -51,7 +51,12 @@ export const UserSchedules: React.FC = () => {
     })
   }
 
-  const deleteSchedule = async (uid: string) => {
+  const handleCheckIn = async (uid: string) => {
+    const docRef = doc(db, 'schedules', uid)
+    await updateDoc(docRef, { isChecked: true })
+  }
+
+  const handleDeleteSchedule = async (uid: string) => {
     alert(uid)
     await deleteDoc(doc(db, 'schedules', uid))
   }
@@ -78,9 +83,19 @@ export const UserSchedules: React.FC = () => {
                     <p>Das {data.initialHour}h às {data.finalHour}h</p>
                   </div>
                   <div className='px-3'>
-                    <button className='btn btn-danger' onClick={() => deleteSchedule(uid)} >
-                      DESISTIR
-                    </button>
+
+                    {
+                      (
+                        data.initialHour === new Date().getHours() &&
+                        data.month === new Date().getMonth() &&
+                        data.year === new Date().getFullYear()
+                      )
+                        ? (data.isChecked === false ? <button className='btn btn-info' onClick={() => handleCheckIn(uid)}>CHECK-IN</button> : <button className='btn btn-success'>Confirmado</button>)
+                        : (<button className='btn btn-danger' onClick={() => handleDeleteSchedule(uid)} >
+                          DESISTIR
+                        </button>)
+                    }
+
                   </div>
                 </div>
                 ))
