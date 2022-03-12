@@ -55,21 +55,20 @@ export function Environment () {
   async function getData (date: string) {
     setLoading(true)
     setDate(date)
+    setSchedules([])
     const docsRef = collection(db, 'schedules')
     const docFilterDate = where('date', '==', new Date(date).getDate() + 1)
     const docFilterMonth = where('month', '==', new Date(date).getMonth())
     const docFilterYear = where('year', '==', new Date(date).getFullYear())
     const docFilterEnvironment = where('local', '==', toPtBr[environment])
     const q = query(docsRef, docFilterDate, docFilterMonth, docFilterYear, docFilterEnvironment)
-    const unsubscribe = onSnapshot(q, querySnapshot => {
+    onSnapshot(q, querySnapshot => {
       querySnapshot.forEach(doc => {
         setSchedules(prevState => [...prevState, doc.data()])
       })
     })
-
     console.log(schedules)
     setLoading(false)
-    return unsubscribe
   }
 
   async function getEnviromentData () {
@@ -100,7 +99,7 @@ export function Environment () {
     getData(date)
     getEnviromentData()
     getBoards()
-  }, [])
+  }, [date])
 
   // Interfaces
   interface IrenderHours {
