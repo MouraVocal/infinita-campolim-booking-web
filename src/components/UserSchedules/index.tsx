@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 // Firestore
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, getDocs, Firestore, DocumentData, where, query } from 'firebase/firestore'
-import { firebaseConfig } from '../../config/firebase'
+import { collection, DocumentData, where, query, doc, deleteDoc, onSnapshot } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
+import { db } from '../../config/firebase'
 
+// Unique Id
 import { v4 as uuidv4 } from 'uuid'
 
 // Assets
@@ -13,6 +13,9 @@ import Academia from '../../assets/academia.jpeg'
 import Piscina from '../../assets/piscina.jpeg'
 import Salao from '../../assets/salao.jpg'
 import Quadra from '../../assets/quadra.jpeg'
+
+// styles
+import './styles.css'
 
 const photo = (name: string) => {
   if (name === 'Academia') {
@@ -30,55 +33,63 @@ const photo = (name: string) => {
 }
 
 export const UserSchedules: React.FC = () => {
-  const app = initializeApp(firebaseConfig)
-  const db = getFirestore(app)
   const auth = getAuth()
 
   const userId = auth.currentUser?.uid
 
   const [schedules, setSchedules] = useState<DocumentData[]>([])
 
-  const querySnapshot = async (db: Firestore) => {
-    const schedulesCol = collection(db, 'schedules')
-    const userSchedules = query(schedulesCol, where('user', '==', userId))
-    const schedulesSnapshot = await getDocs(userSchedules)
-    const schedulesList = schedulesSnapshot.docs.map(doc => doc.data())
-    return schedulesList
+  const getUserSchedules = async () => {
+    setSchedules([])
+    const docsRef = collection(db, 'schedules')
+    const q = query(docsRef, where('user', '==', userId))
+    onSnapshot(q, schedulesSnapshot => {
+      setSchedules([])
+      schedulesSnapshot.forEach(doc => {
+        setSchedules(prevState => [...prevState, { uid: doc.id, data: doc.data() }])
+      })
+    })
+  }
+
+  const deleteSchedule = async (uid: string) => {
+    alert(uid)
+    await deleteDoc(doc(db, 'schedules', uid))
   }
 
   useEffect(() => {
-    querySnapshot(db)
-      .then((items) => setSchedules(items))
+    getUserSchedules()
   }, [])
 
   return (
-    <div className='container-fluid'>
+    <div>
       <h4>Seus últimos agendamentos</h4>
-      {
-        schedules.length
-          ? (
-              schedules.map(item => (
-              <div key={uuidv4()} className='d-flex border rounded align-items-center p-2 mb-2'>
-                <div>
-                  <img src={photo(item.local)} className='rounded img-fluid' alt="foto" />
+      <div>
+        {
+          schedules.length
+            ? (
+                schedules.map(({ data, uid }) => (
+                <div key={uuidv4()} className='d-flex border rounded p-2 mb-2 shadow-sm align-items-center justify-content-between schedules-container'>
+                  <div>
+                    <img src={photo(data.local)} className='rounded img-fluid' alt="foto" />
+                  </div>
+                  <div className='px-2'>
+                    <b>{data.local}</b>
+                    <p>{data.date}/{data.month + 1}/{data.year}</p>
+                    <p>Das {data.initialHour}h às {data.finalHour}h</p>
+                  </div>
+                  <div className='px-3'>
+                    <button className='btn btn-danger' onClick={() => deleteSchedule(uid)} >
+                      DESISTIR
+                    </button>
+                  </div>
                 </div>
-                <div className='px-2'>
-                  <b>{item.local}</b>
-                  <p>{item.date}/{item.month + 1}/{item.year}</p>
-                  <p>Das {item.initialHour}h às {item.finalHour}h</p>
-                </div>
-                <div className='px-3'>
-                  <button className='btn btn-danger'>
-                    cancelar
-                  </button>
-                </div>
-              </div>
-              ))
-            )
-          : (
-            <div>Você ainda não tem agendamentos</div>
-            )
-      }
+                ))
+              )
+            : (
+              <div>Você ainda não tem agendamentos</div>
+              )
+        }
+      </div>
     </div>
   )
 }

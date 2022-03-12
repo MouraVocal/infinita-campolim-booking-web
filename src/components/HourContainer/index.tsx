@@ -29,7 +29,7 @@ export function HourContainer ({ text, scheduled, userScheduled, initialHour, fi
   }
 
   // Consts
-  const scheduleId = `${addZero(initialHour)}${addZero(finalHour)}${addZero(Number(selectedDate.getDate()))}${addZero(Number(selectedDate.getMonth() + 1))}${addZero(Number(selectedDate.getFullYear()))}${environment}`
+  const scheduleId = `${addZero(initialHour)}${addZero(finalHour)}${addZero(Number(selectedDate.getDate() + 1))}${addZero(Number(selectedDate.getMonth() + 1))}${addZero(Number(selectedDate.getFullYear()))}${environment}`
   const user = getAuth().currentUser
 
   const handleClick = async () => {
