@@ -2,9 +2,10 @@ import { FormEvent, useState } from 'react'
 
 // Firebase
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
-import { firebaseConfig } from '../../config/firebase'
+import { db, firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
 import { LoadingSpinner } from '../../components/LoadingSpinner'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 export const SignUp: React.FC = () => {
   initializeApp(firebaseConfig)
@@ -19,6 +20,26 @@ export const SignUp: React.FC = () => {
     e.preventDefault()
     if (email && password) {
       return createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const user = userCredential.user
+          const docRef = doc(db, 'users', user.uid)
+          const docSnap = await getDoc(docRef)
+
+          if (!docSnap.exists()) {
+            console.log(user.uid, ' do not exists')
+            await setDoc(doc(db, 'users', user.uid), {
+              name: user.displayName,
+              apt: '',
+              email: user.email,
+              photo: user.photoURL,
+              tel: user.phoneNumber,
+              tower: '',
+              isAdmin: false,
+              isBlocked: false,
+              uid: user.uid
+            })
+          }
+        })
         .catch(error => {
           setFirebaseError(error.message)
           setLoading(false)

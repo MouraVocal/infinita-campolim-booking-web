@@ -141,23 +141,26 @@ export function Environment () {
         <div className='d-flex flex-wrap justify-content-center'>
 
           {
-            renderHours.map(item => {
-              if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
-                return null
-              }
-              if (schedules.find(schedule => schedule.initialHour === item.openedAt)) {
-                if (schedules.find(schedule => schedule.user === userId)) {
-                  return <HourContainer
-                    environment={toPtBr[environment]}
-                    initialHour={item.openedAt}
-                    finalHour={item.closedAt}
-                    selectedDate={selectedDate}
-                    userScheduled
-                    key={uuidv4()}
-                    text='Você agendou'
-                  />
+            renderHours.length
+              ? renderHours.map(item => {
+                if (actualDate.getDate() === selectedDate.getDate() + 1 && actualDate.getMonth() === selectedDate.getMonth() && actualDate.getFullYear() === selectedDate.getFullYear() && item.openedAt <= actualHour) {
+                  return null
                 }
-                return <HourContainer
+
+                if (schedules.find(schedule => schedule.initialHour === item.openedAt && schedule.user === userId)) {
+                  return <HourContainer
+                  environment={toPtBr[environment]}
+                  initialHour={item.openedAt}
+                  finalHour={item.closedAt}
+                  selectedDate={selectedDate}
+                  userScheduled
+                  key={uuidv4()}
+                  text='Você agendou'
+                />
+                }
+
+                if (schedules.find(schedule => schedule.initialHour === item.openedAt && schedule.user !== userId)) {
+                  return <HourContainer
                   environment={toPtBr[environment]}
                   initialHour={item.openedAt}
                   finalHour={item.closedAt}
@@ -166,8 +169,9 @@ export function Environment () {
                   key={uuidv4()}
                   text='Agendado'
                 />
-              }
-              return <HourContainer
+                }
+
+                return <HourContainer
                 environment={toPtBr[environment]}
                 initialHour={item.openedAt}
                 finalHour={item.closedAt}
@@ -175,13 +179,16 @@ export function Environment () {
                 key={uuidv4()}
                 text={`das ${item.openedAt}h até ${item.closedAt}h`}
               />
-            })
+              })
+              : <div className='w-100 text-center'>Não há horários mais por hoje 😢, tente no próximo dia.</div>
           }
         </div>
         <div className='d-flex flex-wrap justify-content-center'>
           <h4 className='text-center py-2'>Notícias de {toPtBr[environment]}</h4>
           {
-            posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
+            posts.length
+              ? posts.map(item => <PostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
+              : <div className='w-100 text-center'>Não há notícias por enquanto</div>
           }
         </div>
       </>

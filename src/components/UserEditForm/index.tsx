@@ -134,7 +134,7 @@ export function UserEditForm ({ userInfo }: DocumentData) {
 
               </div>
               <div className="modal-footer">
-                <button type="submit" className="btn btn-success" data-bs-dismiss="modal">
+                <button type="submit" className="btn btn-success">
                   {
                     loading
                       ? <div className="spinner-border" role="status">
