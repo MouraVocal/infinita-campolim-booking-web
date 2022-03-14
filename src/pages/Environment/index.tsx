@@ -51,26 +51,6 @@ export function Environment () {
   const [closedAt, setClosedAt] = useState('')
   const [posts, setPosts] = useState<DocumentData[]>([])
 
-  // Get Data
-  async function getData (date: string) {
-    setLoading(true)
-    setDate(date)
-    setSchedules([])
-    const docsRef = collection(db, 'schedules')
-    const docFilterDate = where('date', '==', new Date(date).getDate() + 1)
-    const docFilterMonth = where('month', '==', new Date(date).getMonth())
-    const docFilterYear = where('year', '==', new Date(date).getFullYear())
-    const docFilterEnvironment = where('local', '==', toPtBr[environment])
-    const q = query(docsRef, docFilterDate, docFilterMonth, docFilterYear, docFilterEnvironment)
-    onSnapshot(q, querySnapshot => {
-      querySnapshot.forEach(doc => {
-        setSchedules(prevState => [...prevState, doc.data()])
-      })
-    })
-    console.log(schedules)
-    setLoading(false)
-  }
-
   async function getEnviromentData () {
     setLoading(true)
     const docsRef = collection(db, 'boards')
@@ -96,9 +76,24 @@ export function Environment () {
   }
 
   useEffect(() => {
-    getData(date)
+    setLoading(true)
+    setDate(date)
+    setSchedules([])
+    const docsRef = collection(db, 'schedules')
+    const docFilterDate = where('date', '==', new Date(date).getDate() + 1)
+    const docFilterMonth = where('month', '==', new Date(date).getMonth())
+    const docFilterYear = where('year', '==', new Date(date).getFullYear())
+    const docFilterEnvironment = where('local', '==', toPtBr[environment])
+    const q = query(docsRef, docFilterDate, docFilterMonth, docFilterYear, docFilterEnvironment)
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      querySnapshot.forEach(doc => {
+        setSchedules(prevState => [...prevState, doc.data()])
+      })
+    })
     getEnviromentData()
     getBoards()
+    setLoading(false)
+    return () => unsubscribe()
   }, [date])
 
   // Interfaces
@@ -135,7 +130,7 @@ export function Environment () {
                 id="datepicker"
                 className='form-control w-auto'
                 value={date}
-                onChange={(value) => getData(value.target.value)}
+                onChange={(value) => setDate(value.target.value)}
               />
             </>
           }

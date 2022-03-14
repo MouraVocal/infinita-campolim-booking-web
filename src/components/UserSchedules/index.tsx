@@ -39,17 +39,19 @@ export const UserSchedules: React.FC = () => {
 
   const [schedules, setSchedules] = useState<DocumentData[]>([])
 
-  const getUserSchedules = async () => {
+  useEffect(() => {
     setSchedules([])
     const docsRef = collection(db, 'schedules')
     const q = query(docsRef, where('user', '==', userId))
-    onSnapshot(q, schedulesSnapshot => {
+    const unsubscribe = onSnapshot(q, schedulesSnapshot => {
       setSchedules([])
       schedulesSnapshot.forEach(doc => {
         setSchedules(prevState => [...prevState, { uid: doc.id, data: doc.data() }])
       })
     })
-  }
+
+    return () => unsubscribe()
+  }, [])
 
   const handleCheckIn = async (uid: string) => {
     const docRef = doc(db, 'schedules', uid)
@@ -57,13 +59,8 @@ export const UserSchedules: React.FC = () => {
   }
 
   const handleDeleteSchedule = async (uid: string) => {
-    alert(uid)
     await deleteDoc(doc(db, 'schedules', uid))
   }
-
-  useEffect(() => {
-    getUserSchedules()
-  }, [])
 
   return (
     <div>
