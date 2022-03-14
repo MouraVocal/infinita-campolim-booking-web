@@ -1,16 +1,48 @@
+import React, { FormEvent, useState } from 'react'
 import { doc, DocumentData, updateDoc } from 'firebase/firestore'
-import { FormEvent, useState } from 'react'
 import { db } from '../../config/firebase'
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
 
 export function UserEditForm ({ userInfo }: DocumentData) {
   // States
   const [loading, setLoading] = useState(false)
+  const [isImgUploaded, setIsImgUploaded] = useState(false)
+  const [userImg, setUserImg] = useState(userInfo.photo || 'https://via.placeholder.com/100')
   const [name, setName] = useState<string>(userInfo.name)
   const [apt, setApt] = useState<string>(userInfo.apt)
   const [tower, setTower] = useState<string>(userInfo.tower)
   const [tel, setTel] = useState<string>(userInfo.tel)
 
+  // Storage
+  const storage = getStorage()
+
   // Functions
+  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader()
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        setUserImg(() => e.target?.result)
+        setIsImgUploaded(true)
+        const storageRef = ref(storage, `usersImages/${userInfo.uid}`)
+        uploadString(storageRef, e.target?.result as string, 'data_url')
+          .then(async (snapshot) => {
+            console.log('Upload realizado com sucesso')
+            getDownloadURL(snapshot.ref)
+              .then(async downloadUrl => {
+                console.log(downloadUrl)
+                const docRef = doc(db, 'users', userInfo.uid)
+                await updateDoc(docRef, {
+                  photo: downloadUrl
+                })
+              })
+          })
+      }
+
+      reader.readAsDataURL(e.target.files[0])
+    }
+  }
+
   async function handleUpload () {
     setLoading(true)
     const docRef = doc(db, 'users', userInfo.uid)
@@ -56,15 +88,48 @@ export function UserEditForm ({ userInfo }: DocumentData) {
           <div className="modal-body">
             <form onSubmit={handleEdit} className='needs-validation' noValidate>
               <div className="mb-3 border p-3 rounded">
-                <div className='mb-3'>
-                  <label htmlFor="photo" className="form-label">Foto de Perfil</label>
+                <div className='mb-3 d-flex justify-content-center'>
+
+                  {
+                    isImgUploaded
+                      ? (
+                        <label htmlFor="photo" className="form-label">
+                          <img
+                            src={userImg}
+                            style={{ width: '100px', height: '100px' }}
+                            className='rounded'
+                          />
+                        </label>
+                        )
+                      : (
+                        <>
+                          <label htmlFor="photo" className="form-label">
+                            <img
+                            src={userImg || userInfo.photo}
+                            alt="Foto do usuário"
+                            style={{ width: '100px', height: '100px' }}
+                            />
+                          </label>
+                          <input
+                            className="form-control"
+                            id="photo"
+                            type="file"
+                            name="photo"
+                            accept='image/*'
+                            onChange={handleImgChange}
+                            style={{ display: 'none' }}
+                          />
+                        </>
+                        )
+                  }
                   <input
                     className="form-control"
                     id="photo"
                     type="file"
                     name="photo"
-                    accept='image/png, image/jpeg'
-                    capture
+                    accept='image/*'
+                    onChange={handleImgChange}
+                    style={{ display: 'none' }}
                   />
                 </div>
 
