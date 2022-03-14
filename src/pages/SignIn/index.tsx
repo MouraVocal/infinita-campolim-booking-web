@@ -2,9 +2,8 @@ import { FormEvent, useState } from 'react'
 
 // Firebase
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { db, firebaseConfig } from '../../config/firebase'
+import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 // assets
 import googleLogo from '../../assets/google.svg'
@@ -23,26 +22,6 @@ export const SignIn: React.FC = () => {
     setLoading(true)
     const provider = new GoogleAuthProvider()
     signInWithPopup(auth, provider)
-      .then(async (userCredential) => {
-        const user = userCredential.user
-        const docRef = doc(db, 'users', user.uid)
-        const docSnap = await getDoc(docRef)
-
-        if (!docSnap.exists()) {
-          console.log(user.uid, ' do not exists')
-          await setDoc(doc(db, 'users', user.uid), {
-            name: user.displayName,
-            apt: '',
-            email: user.email,
-            photo: user.photoURL,
-            tel: user.phoneNumber,
-            tower: '',
-            isAdmin: false,
-            isBlocked: false,
-            uid: user.uid
-          })
-        }
-      })
       .catch(error => {
         setFirebaseError(error.message)
         setLoading(false)
@@ -55,26 +34,6 @@ export const SignIn: React.FC = () => {
     e.preventDefault()
     if (email && password) {
       return signInWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-          const user = userCredential.user
-          const docRef = doc(db, 'users', user.uid)
-          const docSnap = await getDoc(docRef)
-
-          if (!docSnap.exists()) {
-            console.log(user.uid, ' do not exists')
-            await setDoc(doc(db, 'users', user.uid), {
-              name: user.displayName,
-              apt: '',
-              email: user.email,
-              photo: user.photoURL,
-              tel: user.phoneNumber,
-              tower: '',
-              isAdmin: false,
-              isBlocked: false,
-              uid: user.uid
-            })
-          }
-        })
         .catch(error => {
           setFirebaseError(error.message)
           setLoading(false)
