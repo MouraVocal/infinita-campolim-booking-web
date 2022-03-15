@@ -23,17 +23,19 @@ interface IScheduleCard {
 }
 
 export function ScheduleCard ({ data, uid }: IScheduleCard) {
-  if (data.initialHour === new Date().getHours() &&
+  const verifyIfHasNotifications = setInterval(() => {
+    if (data.initialHour === new Date().getHours() &&
     data.month === new Date().getMonth() &&
     data.year === new Date().getFullYear()) {
-    if (Notification.permission === 'granted') {
-    // eslint-disable-next-line no-unused-vars
-      const notification = new Notification('Entre no App Pra fazer Check-in 😎', {
-        body: `${data.local}: das ${data.initialHour}h às ${data.finalHour}`,
-        icon: InfinitaLogo
-      })
+      if (Notification.permission === 'granted') {
+        // eslint-disable-next-line no-unused-vars
+        const notification = new Notification('Entre no App Pra fazer Check-in 😎', {
+          body: `${data.local}: das ${data.initialHour}h às ${data.finalHour}`,
+          icon: InfinitaLogo
+        })
+      }
     }
-  }
+  }, 1000 * 60 * 60)
 
   const photo = (name: string) => {
     if (name === 'Academia') {
@@ -57,6 +59,7 @@ export function ScheduleCard ({ data, uid }: IScheduleCard) {
 
   const handleDeleteSchedule = async (uid: string) => {
     await deleteDoc(doc(db, 'schedules', uid))
+    clearInterval(verifyIfHasNotifications)
   }
 
   return (

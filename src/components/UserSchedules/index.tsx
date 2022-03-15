@@ -41,7 +41,11 @@ export const UserSchedules: React.FC = () => {
           schedules.length
             ? (
                 schedules.map(({ data, uid }) => (
-                  <ScheduleCard data={data} uid={uid} key={uuidv4()} />
+                  data.initialHour < new Date().getHours() &&
+                  data.month === new Date().getMonth() &&
+                  data.year === new Date().getFullYear()
+                    ? null
+                    : <ScheduleCard data={data} uid={uid} key={uuidv4()} />
                 ))
               )
             : (
