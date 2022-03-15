@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 
 // Firebase
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth'
 import { firebaseConfig } from '../../config/firebase'
 import { initializeApp } from 'firebase/app'
 
@@ -41,6 +41,15 @@ export const SignIn: React.FC = () => {
         )
     }
     return alert('Por favor preencha os campos')
+  }
+
+  // get E-mail to a new password
+  const getEmailResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert('E-mail Enviado com sucesso, verifique sua caixa de entrada')
+      })
+      .catch(error => alert(`Por favor preencha o e-mail que deseja recuperar a senha. ${error.message}`))
   }
 
   const forms = document.getElementsByClassName('needs-validation')
@@ -101,6 +110,7 @@ export const SignIn: React.FC = () => {
             <button className='btn btn-primary mb-3' type="submit">Entrar</button>
           </div>
         </form>
+        <button className='btn btn-link' onClick={getEmailResetPassword}>Esqueceu a senha?</button>
         <hr />
         <p className='text-center'>ou</p>
         <button onClick={handleGoogleSignIn} className='btn btn-danger w-100'>

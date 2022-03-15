@@ -55,6 +55,7 @@ export function ScheduleCard ({ data, uid }: IScheduleCard) {
   const handleCheckIn = async (uid: string) => {
     const docRef = doc(db, 'schedules', uid)
     await updateDoc(docRef, { isChecked: true })
+    clearInterval(verifyIfHasNotifications)
   }
 
   const handleDeleteSchedule = async (uid: string) => {
