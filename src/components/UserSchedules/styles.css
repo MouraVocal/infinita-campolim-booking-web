@@ -1,3 +1,23 @@
 .schedules-container {
-  max-width: 500px;
+  width: 500px;
+}
+
+@media (max-width: 510px) {
+  .schedules-container {
+    width: 420px;
+  }
+}
+
+@media (max-width: 440px) {
+  .schedules-container {
+    width: 200px;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 240px) {
+  .schedules-container {
+    width: auto;
+    flex-direction: column;
+  }
 }

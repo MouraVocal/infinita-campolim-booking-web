@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 // Firebase
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
@@ -32,8 +31,26 @@ export function HourContainer ({ text, scheduled, userScheduled, initialHour, fi
   const scheduleId = `${addZero(initialHour)}${addZero(finalHour)}${addZero(Number(selectedDate.getDate() + 1))}${addZero(Number(selectedDate.getMonth() + 1))}${addZero(Number(selectedDate.getFullYear()))}${environment}`
   const user = getAuth().currentUser
 
+  function notifyMe () {
+    if (!('Notification' in window)) {
+      return console.log('This browser does not support desktop notification')
+    }
+    if (Notification.permission === 'granted') {
+      return console.log('Nofiticações permitidas')
+    }
+    if (Notification.permission !== 'denied') {
+      Notification.requestPermission()
+        .then(function (permission) {
+          if (permission === 'granted') {
+            return console.log('Nofiticações permitidas')
+          }
+        })
+    }
+  }
+
   const handleClick = async () => {
     setLoading(true)
+    notifyMe()
     alert('Você está agendando')
     await setDoc(doc(db, 'schedules', scheduleId), {
       apt: 'teste',

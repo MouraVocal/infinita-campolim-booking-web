@@ -48,7 +48,7 @@ export const Navbar = (): JSX.Element => {
 						  ? (
 								<>
 									<li className="nav-item">
-										<Link className="nav-link" aria-current="page" to="/dashboard">Painel de Controle</Link>
+										<Link className="nav-link" aria-current="page" to="/dashboard">Início</Link>
 									</li>
 									<li className="nav-item">
 										<Link className="nav-link" to="booking">Agendar</Link>
