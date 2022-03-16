@@ -9,13 +9,15 @@ import { initializeApp } from 'firebase/app'
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
 import { LoadingSpinner } from '../components/LoadingSpinner'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, DocumentData, getDoc, setDoc } from 'firebase/firestore'
+import { AdminRoutes } from './admin.routes'
 
 export const Routes = () => {
   const [loading, setloading] = useState(true)
   initializeApp(firebaseConfig)
   const auth = getAuth()
   const [ok, setOk] = useState(false)
+  const [user, setUser] = useState<DocumentData>({})
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -41,6 +43,10 @@ export const Routes = () => {
                 setloading(false)
               })
           }
+
+          if (docSnap.exists()) {
+            setUser(docSnap.data())
+          }
           setOk(true)
           setloading(false)
         } else {
@@ -59,7 +65,9 @@ export const Routes = () => {
         <LoadingSpinner />
         )
       : (
-          ok ? <AppRoutes /> : <AuthRoutes />
+          ok
+            ? user?.isAdmin ? <AdminRoutes /> : <AppRoutes />
+            : <AuthRoutes />
         )
   )
 }

@@ -44,7 +44,7 @@ export function Environment () {
   const userId = getAuth().currentUser?.uid
 
   // States
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [date, setDate] = useState(`${new Date().getFullYear()}-${addZero(new Date().getMonth() + 1)}-${addZero(new Date().getDate())}`)
   const [loading, setLoading] = useState(false)
   const [schedules, setSchedules] = useState<DocumentData[]>([])
   const [openedAt, setOpenedAt] = useState('')
@@ -113,6 +113,13 @@ export function Environment () {
     renderHours.push({ openedAt: i, closedAt: i + 1 })
   }
 
+  function addZero (number: number) {
+    if (String(number).length < 2) {
+      return '0' + String(number)
+    }
+    return String(number)
+  }
+
   return (
     loading
       ? <LoadingSpinner />
@@ -125,7 +132,7 @@ export function Environment () {
               <label htmlFor="datepicker" className='p-3'>Escolha a data:</label>
               <input
                 type="date"
-                min={new Date().toISOString().split('T')[0]}
+                min={`${new Date().getFullYear()}-${addZero(new Date().getMonth() + 1)}-${addZero(new Date().getDate())}`}
                 name="datepicker"
                 id="datepicker"
                 className='form-control w-auto'
