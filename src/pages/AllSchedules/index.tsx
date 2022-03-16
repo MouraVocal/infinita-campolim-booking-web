@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from 'uuid'
 
 // Firebase
 import { collection, DocumentData, getDocs } from 'firebase/firestore'
-import { AllInfoScheduleCard } from '../../components/AllInfoScheduleCard'
+import { AdminScheduleCard } from '../../components/AdminScheduleCard'
 import { db } from '../../config/firebase'
 
 export function AllSchedules () {
@@ -25,7 +25,7 @@ export function AllSchedules () {
   return (
     <>
       {
-        schedules.map(schedule => <AllInfoScheduleCard key={uuidV4()} data={schedule} />)
+        schedules.map(schedule => <AdminScheduleCard key={uuidV4()} data={schedule} />)
       }
     </>
   )

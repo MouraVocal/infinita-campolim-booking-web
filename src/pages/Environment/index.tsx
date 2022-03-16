@@ -17,7 +17,7 @@ import './styles.css'
 // Components
 import { LoadingSpinner } from '../../components/LoadingSpinner'
 import { HourContainer } from '../../components/HourContainer'
-import PostCard from '../../components/PostsCard'
+import PostCard from '../../components/PostCard'
 
 // Excluding undefined type in useParams types to use as an object entry
 declare module 'react-router-dom' {

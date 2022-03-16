@@ -8,7 +8,7 @@ import Piscina from '../../assets/piscina.jpeg'
 import Salao from '../../assets/salao.jpg'
 import Quadra from '../../assets/quadra.jpeg'
 
-export function AllInfoScheduleCard ({ data }: DocumentData) {
+export function AdminScheduleCard ({ data }: DocumentData) {
   const photo = (name: string) => {
     if (name === 'Academia') {
       return Academia

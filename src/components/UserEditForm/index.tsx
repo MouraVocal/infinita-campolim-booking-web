@@ -1,13 +1,18 @@
 import React, { FormEvent, useState } from 'react'
+
+// Firebase
 import { doc, DocumentData, updateDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
+
+// Assets
+import accountIcon from '../../assets/account.png'
 
 export function UserEditForm ({ userInfo }: DocumentData) {
   // States
   const [loading, setLoading] = useState(false)
   const [isImgUploaded, setIsImgUploaded] = useState(false)
-  const [userImg, setUserImg] = useState(userInfo.photo || 'https://via.placeholder.com/100')
+  const [userImg, setUserImg] = useState(userInfo.photo || accountIcon)
   const [name, setName] = useState<string>(userInfo.name)
   const [apt, setApt] = useState<string>(userInfo.apt)
   const [tower, setTower] = useState<string>(userInfo.tower)
@@ -105,7 +110,7 @@ export function UserEditForm ({ userInfo }: DocumentData) {
                         <>
                           <label htmlFor="photo" className="form-label">
                             <img
-                            src={userImg || userInfo.photo}
+                            src={userImg}
                             alt="Foto do usuário"
                             style={{ width: '100px', height: '100px' }}
                             className='rounded'
@@ -183,7 +188,7 @@ export function UserEditForm ({ userInfo }: DocumentData) {
                 </div>
 
                 <div className='mb-3'>
-                  <label htmlFor="password">Telefone</label>
+                  <label htmlFor="password">Telefone DDD + número</label>
                   <input
                     className="form-control"
                     type="text"

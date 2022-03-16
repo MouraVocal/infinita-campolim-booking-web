@@ -1,0 +1,11 @@
+@media (max-width: 430px) {
+  .edit-user-btn-text {
+    display: none;
+  }
+}
+
+@media (max-width: 660px) {
+  .admin-user-card-container {
+    flex-direction: column;
+  }
+}

@@ -9,7 +9,7 @@
   right: 50px;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 574px) {
   #signoutbtn {
     position: static;
     margin-top: 20px     

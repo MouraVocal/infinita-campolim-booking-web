@@ -2,4 +2,7 @@
   .edit-user-btn-text {
     display: none;
   }
+  .user-avatar {
+    display: none;
+  }
 }

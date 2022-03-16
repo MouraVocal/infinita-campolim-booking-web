@@ -47,7 +47,7 @@ export const Navbar = (): JSX.Element => {
   return (
     loading
       ? <LoadingSpinner />
-      : <nav className="navbar navbar-expand-sm navbar-light bg-light">
+      : <nav className="navbar navbar-expand-sm navbar-light bg-light mb-2">
 				<div className="container-fluid">
 					<Link className="navbar-brand" to="/">
 						<img src={icon} alt="infinita campolim logo" id='icon' />
