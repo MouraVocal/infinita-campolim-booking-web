@@ -33,22 +33,25 @@ export const UserSchedules: React.FC = () => {
     return () => unsubscribe()
   }, [])
 
+  const numberActualHour = Number(new Date().getHours())
+  const numberActualDate = Number(new Date().getDate())
+  const numberActualMonth = Number(new Date().getMonth())
+  const numberActualYear = Number(new Date().getFullYear())
+
   return (
     <div className='text-center'>
-      <h4>Seus últimos agendamentos</h4>
+      <h4>Seus próximos agendamentos</h4>
       <div className='d-flex flex-column align-items-center'>
         {
           schedules.length
             ? (
                 schedules.map(({ data, uid }) => (
-                  data.initialHour < new Date().getHours() &&
-                  data.date <= new Date().getDate() &&
-                  data.month === new Date().getMonth() + 1 &&
-                  data.year === new Date().getFullYear()
+                  (data.initialHour < numberActualHour && data.date === numberActualDate && data.month === numberActualMonth && data.year === numberActualYear) || (data.date < numberActualDate && data.month === numberActualMonth && data.year === numberActualYear) || (data.month < numberActualMonth && data.year === numberActualYear) || data.year < numberActualYear
                     ? null
                     : <ScheduleCard data={data} uid={uid} key={uuidv4()} />
                 ))
               )
+
             : (
               <div>Você ainda não tem agendamentos</div>
               )

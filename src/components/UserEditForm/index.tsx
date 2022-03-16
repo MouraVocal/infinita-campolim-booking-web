@@ -108,6 +108,7 @@ export function UserEditForm ({ userInfo }: DocumentData) {
                             src={userImg || userInfo.photo}
                             alt="Foto do usuário"
                             style={{ width: '100px', height: '100px' }}
+                            className='rounded'
                             />
                           </label>
                           <input

@@ -1,5 +1,7 @@
+import { UserCard } from '../../components/UserCard'
+
 export function AdminHome () {
   return (
-    <div>AdminHome</div>
+    <UserCard />
   )
 }

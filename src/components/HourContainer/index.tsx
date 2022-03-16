@@ -51,7 +51,6 @@ export function HourContainer ({ text, scheduled, userScheduled, initialHour, fi
   const handleClick = async () => {
     setLoading(true)
     notifyMe()
-    alert('Você está agendando')
     await setDoc(doc(db, 'schedules', scheduleId), {
       apt: 'teste',
       date: selectedDate.getDate() + 1,
