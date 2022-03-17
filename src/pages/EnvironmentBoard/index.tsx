@@ -273,7 +273,13 @@ export function EnvironmentBoard () {
               </div>
             </div>
             : posts.length
-              ? posts.map(item => <AdminPostCard key={item.uid} imageUrl={item.image} text={item.text} id={item.uid} />)
+              ? posts.map(item => <AdminPostCard
+                key={item.uid}
+                imageUrl={item.image}
+                text={item.text}
+                id={item.uid}
+                environment={environmentEntry}
+              />)
               : <div className='w-100 text-center'>Não há notícias por enquanto</div>
         }
       </div>
