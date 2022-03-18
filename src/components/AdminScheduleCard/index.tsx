@@ -24,8 +24,6 @@ export function AdminScheduleCard ({ data }: DocumentData) {
     }
   }
 
-  const uid = data.user
-
   const handleDeleteSchedule = async (uid: string) => {
     await deleteDoc(doc(db, 'schedules', uid))
   }
@@ -49,7 +47,7 @@ export function AdminScheduleCard ({ data }: DocumentData) {
           data.year === new Date().getFullYear()
         )
           ? (data.isChecked === false ? <button className='btn btn-danger'>Não Checkado</button> : <button className='btn btn-success'>Checkado</button>)
-          : (<button className='btn btn-danger' onClick={() => handleDeleteSchedule(uid)} >
+          : (<button className='btn btn-danger' onClick={() => handleDeleteSchedule(data.id)} >
             DELETAR
           </button>)
       }

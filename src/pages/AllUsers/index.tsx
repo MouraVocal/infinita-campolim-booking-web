@@ -1,4 +1,4 @@
-import { collection, DocumentData, onSnapshot } from 'firebase/firestore'
+import { collection, DocumentData, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { db } from '../../config/firebase'
 
@@ -10,7 +10,8 @@ export function AllUsers () {
 
   useEffect(() => {
     const docsRef = collection(db, 'users')
-    const unsubscribe = onSnapshot(docsRef, docs => {
+    const q = query(docsRef, orderBy('name'))
+    const unsubscribe = onSnapshot(q, docs => {
       setUsers([])
       docs.forEach(user =>
         setUsers(prevState => [...prevState, user.data()]))
