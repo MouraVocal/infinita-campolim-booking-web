@@ -146,7 +146,8 @@ export function EnvironmentBoard () {
     <>
       <h4 className='text-center py-2'>{environmentEntry}</h4>
       <hr />
-      <p className='text-break text-center'>Alterar Horário de funcionamento:</p>
+      <div className="container-fluid">
+      <h4 className='text-break text-center'>Alterar Horário de funcionamento:</h4>
       {
         loading
           ? <div className='d-flex justify-content-center align-items-center'>
@@ -179,7 +180,7 @@ export function EnvironmentBoard () {
                 onChange={e => setClosedAt(Number(e.target.value))}
               />
               hs
-              <button onClick={handleOpeningHours} className='btn btn-info hourBtn' disabled={loadingOpeningHours}>
+              <button onClick={handleOpeningHours} className='btn btn-info hourBtn my-2' disabled={loadingOpeningHours}>
                 {
                   loadingOpeningHours
                     ? <div className='d-flex justify-content-center align-items-center'>
@@ -193,6 +194,7 @@ export function EnvironmentBoard () {
             </span>
           </h5>
       }
+      </div>
       <hr />
       <div className='d-flex mb-3'>
         <div className="p-3">

@@ -3,7 +3,7 @@ import { doc, DocumentData, updateDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 
 // Assets
-import accountIcon from '../../assets/account.png'
+import userIcon from '../../assets/user.svg'
 
 // Styles
 import './styles.css'
@@ -22,7 +22,7 @@ export function AdminUserCard ({ data }: DocumentData) {
 
         <div className='p-3 align-middle'>
         {/* <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Phoenix Group - Flaticon</a> */}
-          <img src={data.photo || accountIcon} style={{ maxWidth: '200px', maxHeight: '200px' }} alt="data Photo" className='img-fluid rounded' />
+          <img src={data.photo || userIcon} style={{ maxWidth: '200px', height: 'auto' }} alt="data Photo" className='img-fluid rounded' />
         </div>
         <div className='p-3'>
           <h2>{data.name || 'usuário'}</h2>
