@@ -11,7 +11,7 @@ export function AllSchedules () {
   // States
   const [schedules, setSchedules] = useState<DocumentData[]>([])
   const [docsLength, setDocsLength] = useState(0)
-  const [lastVisible, setLastVisible] = useState(null)
+  const [lastVisible, setLastVisible] = useState<DocumentData>({})
 
   const getFirstSchedules = async () => {
     setSchedules([])
@@ -20,7 +20,7 @@ export function AllSchedules () {
     const docsSnapshot = await getDocs(q)
     docsSnapshot.forEach(doc => setSchedules(prevState => [...prevState, { id: doc.id, ...doc.data() }]))
     setDocsLength(docsSnapshot.docs.length)
-    setLastVisible(docsSnapshot.docs[docsSnapshot.docs.length - 1])
+    setLastVisible(() => docsSnapshot.docs[docsSnapshot.docs.length - 1])
   }
 
   useEffect(() => {
