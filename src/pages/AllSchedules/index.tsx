@@ -12,6 +12,7 @@ export function AllSchedules () {
   const [schedules, setSchedules] = useState<DocumentData[]>([])
   const [docsLength, setDocsLength] = useState(0)
   const [lastVisible, setLastVisible] = useState<DocumentData>({})
+  const [hasMore, setHasMore] = useState(true)
 
   const getFirstSchedules = async () => {
     setSchedules([])
@@ -29,6 +30,7 @@ export function AllSchedules () {
 
   const fetchMore = async () => {
     if (docsLength < 10) {
+      setHasMore(false)
       return console.log('Não há mais dados')
     }
     const docsRef = collection(db, 'schedules')
@@ -44,7 +46,14 @@ export function AllSchedules () {
       {
         schedules.map(schedule => <AdminScheduleCard key={uuidV4()} data={schedule} />)
       }
-      <button onClick={fetchMore} className='btn btn-info'>Carregar mais...</button>
+        <div className='d-flex align-items-center justify-content-center p-3'>
+          {
+            hasMore
+              ? <button onClick={fetchMore} className='btn btn-info'>Carregar mais...</button>
+              : <div>Não há mais dados</div>
+          }
+        </div>
+        :
     </>
   )
 }

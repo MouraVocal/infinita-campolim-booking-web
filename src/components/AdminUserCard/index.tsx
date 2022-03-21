@@ -3,7 +3,7 @@ import { doc, DocumentData, updateDoc } from 'firebase/firestore'
 import { db } from '../../config/firebase'
 
 // Assets
-import userIcon from '../../assets/user.svg'
+import userIcon from '../../assets/account.png'
 
 // Styles
 import './styles.css'
